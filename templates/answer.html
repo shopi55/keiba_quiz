@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+{% block content %}
+
+<h2>{{ answer }}</h2>
+
+{% if not is_last %}
+    <a href="/quiz/{{ next_id }}">
+        <button>次へ</button>
+    </a>
+{% else %}
+    <h3>全問終了しました</h3>
+    <a href="{{ url_for('index') }}">最初に戻る</a>
+{% endif %}
+
+{% endblock %}

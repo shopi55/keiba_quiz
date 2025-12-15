@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+{% block content %}
+
+<h2>{{ race_year }} {{ race_name  }}</h2>
+
+<br>
+
+<form method="POST" action="/quiz/{{ qid }}">
+  <fieldset>
+    <legend>次のうち、上記レースの1着の馬を選んで送信ボタンを押してください。</legend>
+    <div>
+      {% for horse in horse_list %}
+      <input type="radio" id="horse {{ loop.index }}" name="selected_horse" value="{{horse}}" />
+      <label for="horse{{ loop.index }}">{{horse}}</label>
+      <br>
+      {% endfor %}
+    </div>
+    <br>
+    <div>
+      <button type="submit">送信</button>
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}
