@@ -1,25 +1,46 @@
+
 {% extends 'base.html'%}
 {% block content %}
+  <!-- 見出し（quiz_hyouji.htmlに倣って） -->
+  <h2>{{ race_name }}</h2>
+  <p>{{ race_date }}</p>
 
-<h2>{{ race_year }} {{ race_name  }}</h2>
+  <!-- 説明文（元の文言を活かす） -->
+  <p>次のうち、上記レースの1着の馬を選んで送信ボタンを押してください。</p>
 
-<br>
+  <!-- レイアウト用ラッパ（stylesheet.cssの.table-and-buttonを適用） -->
+  <div class="table-and-button">
+    <form method="post" action="/quiz/{{ qid }}">
+      <table>
+        <thead>
+          <tr>
+            <th>選択</th>
+            <th>馬番</th>
+            <th>馬名</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in horse_list %}
+            <!--
+              枠色付け用クラス: waku_number-* を付ける場所
+              ※ もし r に枠番号（例: r.waku_number）がある場合は下記のように利用できます。
+              <tr class="waku_number-{{ r.waku_number }}">
+              ただし本テンプレートでは変数を追加・変更しないため、存在しなければクラスは付けません。
+            -->
+            <tr class="waku_number-{{ r.waku_number }}">
+              <td>
+                <!-- 単一選択（1着の馬を1頭選ぶ）：nameは共通で、valueに馬番 -->
+                <input type="radio" name="selected_horse" value="{{ r.horse_number }}" required>
+              </td>
+              <td>{{ r.horse_number }}</td>
+              <td>{{ r.horse.horse_name }}</td>
+            </label></tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
-<form method="POST" action="/quiz/{{ qid }}">
-  <fieldset>
-    <legend>次のうち、上記レースの1着の馬を選んで送信ボタンを押してください。</legend>
-    <div>
-      {% for horse in horse_list %}
-      <input type="radio" id="horse {{ loop.index }}" name="selected_horse" value="{{horse}}" />
-      <label for="horse{{ loop.index }}">{{horse}}</label>
-      <br>
-      {% endfor %}
-    </div>
-    <br>
-    <div>
-      <button type="submit">送信</button>
-    </div>
-  </fieldset>
-</form>
-
+      <!-- 送信ボタン（stylesheet.cssの.decide-buttonを適用） -->
+      <button type="submit" class="decide-button">送信</button>
+    </form>
+  </div>
 {% endblock %}

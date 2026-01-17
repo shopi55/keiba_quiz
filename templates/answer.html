@@ -4,12 +4,16 @@
 <h2>{{ answer }}</h2>
 
 {% if not is_last %}
+<div class="next-wrapper">
     <a href="/quiz/{{ next_id }}">
-        <button>次へ</button>
+        <button class="next-button">次へ</button>
     </a>
+</div>
 {% else %}
-    <h3>全問終了しました</h3>
-    <a href="{{ url_for('index') }}">最初に戻る</a>
+<h2>全問終了しました</h2>
+<div class="start-wrapper">
+    <a class="start-button" href="{{ url_for('index') }}">最初に戻る</a>
+</div>
 {% endif %}
 
 {% endblock %}
