@@ -1,9 +1,12 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for,session
 import os
-
+import secrets
 from models import db,KQT_101, KQT_201, KQT_301
 
 app = Flask(__name__)
+
+# session情報をクライアント側に署名/検証できないため必要な記述
+app.secret_key = secrets.token_hex(32)
 
 # --------------------------------------
 # FlaskとDBの紐づけ
@@ -21,11 +24,15 @@ db.init_app(app)
 def index():
     return render_template('index.html')
 
+
+
 # --------------------------------------
 # 問題ページ
 # --------------------------------------
 @app.route('/quiz/<int:qid>',methods=['GET','POST'])
 def quiz(qid):
+    if 'correct_answers' not in session:
+        session['correct_answers'] = 0
     race = KQT_101.query.get(qid) # 主キーで1件取得
     if not race:
         return render_template(
@@ -44,10 +51,10 @@ def quiz(qid):
         correct_result = next(r for r in race.results if r.ranking_id == 1)
         print(selected_horse_id)
         print(correct_result)
-
         # horse_numberとhorse_idが違うため、正解でも不正解となってしまう
         if selected_horse_id == correct_result.horse_number:
             answer = '正解です！'
+            session['correct_answers']+=1
         else:
             answer = f'不正解です。正解は{correct_result.horse.horse_name}です'
         
@@ -57,7 +64,9 @@ def quiz(qid):
             'answer.html',
             answer=answer,
             next_id=qid+1,
-            is_last=(next_race is None)
+            is_last=(next_race is None),
+            qid=qid,
+            correct_answers=session['correct_answers']
         )
     # ----------------------------------
     # クイズページ
