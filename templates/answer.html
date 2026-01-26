@@ -10,6 +10,7 @@
     </a>
 </div>
 {% else %}
+<h2>{{ qid }}問中、{{ correct_answers }}問正解しました！</h2>
 <h2>全問終了しました</h2>
 <div class="start-wrapper">
     <a class="start-button" href="{{ url_for('index') }}">最初に戻る</a>
